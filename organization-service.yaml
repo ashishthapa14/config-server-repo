@@ -29,12 +29,6 @@ logging:
     org.springframework.boot.docker.compose: DEBUG
 
 management:
-  health:
-    circuitbreakers:
-      enabled: true
-  endpoint:
-    health:
-      show-details: always
   endpoints:
     web:
       exposure:
@@ -45,30 +39,7 @@ server:
   servlet:
     context-path: /api
 
-department:
-  service:
-    url: ${DEPARTMENT_SERVICE_URL:http://localhost:8082}
-
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-
-resilience4j:
-  circuitbreaker:
-    instances:
-      ORGANIZATION-SERVICE:
-        registerHealthIndicator: true
-        failureRateThreshold: 50
-        minimumNumberOfCalls: 5
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-        waitDurationInOpenState: 30s
-        permittedNumberOfCallsInHalfOpenState: 3
-        slidingWindowSize: 10
-        slidingWindowType: COUNT_BASED
-
-  retry:
-    instances:
-      ORGANIZATION-SERVICE:
-        maxAttempts: 5
-        waitDuration: 1s
