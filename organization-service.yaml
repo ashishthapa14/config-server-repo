@@ -1,0 +1,74 @@
+spring:
+  docker:
+    compose:
+      enabled: true
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5434/organization_db}
+    username: ${SPRING_DATASOURCE_USERNAME:organization_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:ashish123}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        default_schema: public
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    default-schema: public
+
+logging:
+  config: classpath:log-spring.xml
+  level:
+    org.flywaydb: DEBUG
+    org.springframework.boot.docker.compose: DEBUG
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+server:
+  port: 8087
+  servlet:
+    context-path: /api
+
+department:
+  service:
+    url: ${DEPARTMENT_SERVICE_URL:http://localhost:8082}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      ORGANIZATION-SERVICE:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+
+  retry:
+    instances:
+      ORGANIZATION-SERVICE:
+        maxAttempts: 5
+        waitDuration: 1s
