@@ -30,7 +30,7 @@ logging:
 
 management:
   health:
-    circuitbreaker:
+    circuitbreakers:
       enabled: true
   endpoint:
     health:
