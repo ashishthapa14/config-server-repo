@@ -4,7 +4,7 @@ spring:
       enabled: true
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5434/organization_db}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5435/organization_db}
     username: ${SPRING_DATASOURCE_USERNAME:organization_user}
     password: ${SPRING_DATASOURCE_PASSWORD:ashish123}
     driver-class-name: org.postgresql.Driver
