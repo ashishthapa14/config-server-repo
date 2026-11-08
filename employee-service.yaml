@@ -29,10 +29,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: *
 
 server:
-  port: 8085
+  port: 8080
   servlet:
     context-path: /api
 
