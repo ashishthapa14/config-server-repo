@@ -2,11 +2,13 @@ spring:
   docker:
     compose:
       enabled: true
+
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5434/employee_db}
     username: ${SPRING_DATASOURCE_USERNAME:employee_user}
     password: ${SPRING_DATASOURCE_PASSWORD:ashish123}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -14,6 +16,7 @@ spring:
     properties:
       hibernate:
         default_schema: public
+
   flyway:
     enabled: true
     locations: classpath:db/migration
@@ -26,6 +29,12 @@ logging:
     org.springframework.boot.docker.compose: DEBUG
 
 management:
+  health:
+    circuitbreaker:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
@@ -40,8 +49,14 @@ department:
   service:
     url: ${DEPARTMENT_SERVICE_URL:http://localhost:8082}
 
-
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      EMPLOYEE-SERVICE:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
