@@ -47,7 +47,9 @@ server:
 
 department:
   service:
-    url: ${DEPARTMENT_SERVICE_URL:http://localhost:8082}
+    urls:
+      - http://localhost:8082
+      - http://localhost:8081
 organization:
   service:
     url: ${DEPARTMENT_SERVICE_URL:http://localhost:8085}
