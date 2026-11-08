@@ -1,7 +1,4 @@
 spring:
-  application:
-    name: EMPLOYEE-SERVICE
-
   docker:
     compose:
       enabled: true
@@ -35,6 +32,14 @@ server:
   port: 8087
   servlet:
     context-path: /api
+
+department:
+  service:
+    url: ${DEPARTMENT_SERVICE_URL:http://localhost:8082}
+
+organization:
+  service:
+    url: ${ORGANIZATION_SERVICE_URL:http://localhost:8085}
 
 management:
   health:
@@ -86,10 +91,6 @@ resilience4j:
 
   retry:
     instances:
-      DEPARTMENT-SERVICE:
-        maxAttempts: 5
-        waitDuration: 1s
-
-      ORGANIZATION-SERVICE:
+      employee-service:
         maxAttempts: 5
         waitDuration: 1s
