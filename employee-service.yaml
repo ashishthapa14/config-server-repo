@@ -1,4 +1,7 @@
 spring:
+  application:
+    name: EMPLOYEE-SERVICE
+
   docker:
     compose:
       enabled: true
@@ -28,41 +31,50 @@ logging:
     org.flywaydb: DEBUG
     org.springframework.boot.docker.compose: DEBUG
 
-management:
-  health:
-    circuitbreakers:
-      enabled: true
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
 server:
   port: 8087
   servlet:
     context-path: /api
 
-department:
-  service:
-    urls:
-      - http://localhost:8082
-      - http://localhost:8081
-organization:
-  service:
-    url: ${DEPARTMENT_SERVICE_URL:http://localhost:8085}
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+
+  endpoint:
+    health:
+      show-details: always
+
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 eureka:
   client:
+    register-with-eureka: true
+    fetch-registry: true
+
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+  instance:
+    prefer-ip-address: true
 
 resilience4j:
   circuitbreaker:
     instances:
-      EMPLOYEE-SERVICE:
+      DEPARTMENT-SERVICE:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+
+      ORGANIZATION-SERVICE:
         registerHealthIndicator: true
         failureRateThreshold: 50
         minimumNumberOfCalls: 5
@@ -74,6 +86,10 @@ resilience4j:
 
   retry:
     instances:
-      EMPLOYEE-SERVICE:
+      DEPARTMENT-SERVICE:
+        maxAttempts: 5
+        waitDuration: 1s
+
+      ORGANIZATION-SERVICE:
         maxAttempts: 5
         waitDuration: 1s
